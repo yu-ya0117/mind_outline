@@ -1,0 +1,6 @@
+/config/master.key
+/node_modules
+/log
+/tmp
+/storage
+/.env
