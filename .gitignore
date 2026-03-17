@@ -1,6 +1,10 @@
 /config/master.key
 /node_modules
-/log
-/tmp
-/storage
-/.env
+/log/*
+/tmp/*
+/storage/*
+/public/assets
+.byebug_history
+.DS_Store
+.env
+
