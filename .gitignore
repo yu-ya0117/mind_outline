@@ -1,10 +1,18 @@
-/config/master.key
-/node_modules
 /log/*
-/tmp/*
-/storage/*
-/public/assets
-.byebug_history
-.DS_Store
-.env
+!/log/.keep
 
+/tmp/*
+!/tmp/.keep
+!/tmp/pids/
+!/tmp/pids/.keep
+
+/tmp/pids/*.pid
+
+/storage/*
+!/storage/.keep
+
+/node_modules
+/.bundle
+/config/master.key
+.env
+.DS_Store
