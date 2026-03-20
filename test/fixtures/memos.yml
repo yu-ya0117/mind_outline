@@ -1,0 +1,11 @@
+one:
+  user: one
+  title: サンプルメモ1
+  content: MyText
+  ancestry: MyString
+
+two:
+  user: two
+  title: サンプルメモ2
+  content: MyText
+  ancestry: MyString
