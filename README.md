@@ -666,4 +666,4 @@ Figma：<https://www.figma.com/design/LjIbl8Pmw11G4e2dHFzCt4/mind_outline%E7%94%
 
 ## 12. ER図
 
-[![Image from Gyazo](https://i.gyazo.com/053bd109268c9747aaaf3ea553c1413b.png)](https://gyazo.com/053bd109268c9747aaaf3ea553c1413b)
+[![Image from Gyazo](https://i.gyazo.com/d62289b2607984c13a28191988d16b0d.png)](https://gyazo.com/d62289b2607984c13a28191988d16b0d)
