@@ -1,0 +1,55 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-md">
+    <h2 class="mb-6 text-center text-2xl font-bold text-gray-800">新規登録</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="mb-4">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= f.label :name, "名前" %>
+        </p>
+        <%= f.text_field :name, autofocus: true,
+            class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="mb-4">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= f.label :email, "メールアドレス" %>
+        </p>
+        <%= f.email_field :email, autocomplete: "email",
+            class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="mb-4">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= f.label :password, "パスワード" %>
+          <% if @minimum_password_length %>
+            <span class="text-xs font-normal text-gray-500">
+              （最低<%= @minimum_password_length %>文字以上）
+            </span>
+          <% end %>
+        </p>
+        <%= f.password_field :password, autocomplete: "new-password",
+            class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="mb-6">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= f.label :password_confirmation, "上記と同じパスワードを再度入力してください" %>
+        </p>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password",
+            class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="text-center">
+        <%= f.submit "新規登録",
+            class: "inline-block rounded-lg bg-green-600 px-6 py-3 text-white font-semibold hover:bg-green-700" %>
+      </div>
+    <% end %>
+
+    <div class="mt-6 text-center text-sm text-gray-600">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>
