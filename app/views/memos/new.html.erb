@@ -1,0 +1,40 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-md">
+    <h2 class="mb-6 text-center text-2xl font-bold text-gray-800">新規メモ作成</h2>
+
+    <% if @memo.errors.any? %>
+      <div class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+        <p class="font-semibold"><%= @memo.errors.count %>件のエラーがあります</p>
+        <ul class="mt-2 list-disc pl-5 text-sm">
+          <% @memo.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with model: @memo, local: true do |f| %>
+      <div class="mb-4">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= f.label :title, "タイトル" %>
+        </p>
+        <%= f.text_field :title, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="mb-6">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= f.label :content, "内容" %>
+        </p>
+        <%= f.text_area :content, rows: 5, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+      </div>
+
+      <div class="flex justify-center gap-3">
+        <%= link_to "戻る", memos_path,
+            class: "rounded-lg bg-gray-200 px-4 py-2 text-gray-800 font-semibold hover:bg-gray-300" %>
+
+        <%= f.submit "作成",
+            class: "rounded-lg bg-green-600 px-4 py-2 text-white font-semibold hover:bg-green-700" %>
+      </div>
+    <% end %>
+  </div>
+</div>

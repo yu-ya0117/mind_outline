@@ -1,9 +1,9 @@
 one:
-  name: Taro
+  name: hoge
   email: one@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password") %>
 
 two:
-  name: Hanako
+  name: fuga
   email: two@example.com
   encrypted_password: <%= Devise::Encryptor.digest(User, "password") %>
