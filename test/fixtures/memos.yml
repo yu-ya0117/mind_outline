@@ -1,11 +1,9 @@
 one:
   user: one
-  title: サンプルメモ1
-  content: MyText
-  ancestry: MyString
+  title: テストメモ1
+  content: テスト内容1
 
 two:
-  user: two
-  title: サンプルメモ2
-  content: MyText
-  ancestry: MyString
+  user: one
+  title: テストメモ2
+  content: テスト内容2
