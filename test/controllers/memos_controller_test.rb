@@ -3,8 +3,13 @@
 require 'test_helper'
 
 class MemosControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
   setup do
     @user = users(:one)
+    @other_user = users(:two)
+    @memo = memos(:one)
+    @other_memo = memos(:two)
   end
 
   test '未ログインではホーム画面にアクセスできない' do
@@ -62,5 +67,34 @@ class MemosControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
+  end
+
+  test '自分のメモ詳細画面を表示できる' do
+    sign_in @user
+
+    get memo_url(@memo)
+    assert_response :success
+    assert_select 'h2', text: 'メモ詳細'
+    assert_match @memo.title, response.body
+    assert_match @memo.content, response.body
+  end
+
+  test '他人のメモ詳細画面にはアクセスできない' do
+    sign_in @user
+
+    get memo_url(@other_memo)
+    assert_response :not_found
+  end
+
+  test 'メモ一覧画面に詳細リンクが表示される' do
+    sign_in @user
+
+    get memos_url
+    assert_response :success
+    assert_select "a[href='#{memo_path(@memo)}']", text: '詳細'
+  end
+  test '未ログイン時はメモ詳細画面にアクセスできずログイン画面へリダイレクトされる' do
+    get memo_url(@memo)
+    assert_redirected_to new_user_session_url
   end
 end
