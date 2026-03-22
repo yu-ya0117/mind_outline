@@ -19,8 +19,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: bash -c "bundle install && bundle exec rails db:prepare && rm -f tmp/pids/server.pid && ./bin/dev"
-
+    command: bash -c "bundle install && bundle exec rails db:prepare && rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0 -p 3000"
     tty: true
     stdin_open: true
     volumes:
@@ -34,6 +33,30 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+  js:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: yarn build --watch
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/myapp
+      - bundle_data:/usr/local/bundle:cached
+      - node_modules:/myapp/node_modules
+
+  css:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: yarn build:css --watch
+    tty: true
+    stdin_open: true
+    volumes:
+      - .:/myapp
+      - bundle_data:/usr/local/bundle:cached
+      - node_modules:/myapp/node_modules
 
 volumes:
   bundle_data:
