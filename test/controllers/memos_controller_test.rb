@@ -7,7 +7,6 @@ class MemosControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @user = users(:one)
-    @other_user = users(:two)
     @memo = memos(:one)
     @other_memo = memos(:two)
   end
@@ -93,6 +92,7 @@ class MemosControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "a[href='#{memo_path(@memo)}']", text: '詳細'
   end
+
   test '未ログイン時はメモ詳細画面にアクセスできずログイン画面へリダイレクトされる' do
     get memo_url(@memo)
     assert_redirected_to new_user_session_url
