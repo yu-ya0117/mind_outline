@@ -14,8 +14,8 @@
       <p>更新日時: <%= l @memo.updated_at, format: :short %></p>
     </div>
 
-    <div class="border-t border-gray-200 pt-4">
-      <%= link_to "編集", "#", class: "inline-block rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-white hover:bg-yellow-600" %>
+    <div class="mt-4 flex gap-3 border-t border-gray-200 pt-4">
+      <%= link_to "編集", edit_memo_path(@memo), class: "inline-block rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-white hover:bg-yellow-600" %>
       <%= link_to "一覧へ戻る", memos_path, class: "inline-block rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
     </div>
   </div>
