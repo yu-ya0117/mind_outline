@@ -5,5 +5,5 @@ Rails.application.routes.draw do
 
   root 'homes#index'
 
-  resources :memos, only: %i[index new create]
+  resources :memos
 end

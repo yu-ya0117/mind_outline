@@ -2,6 +2,7 @@
 
 class MemosController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_memo, only: %i[show]
 
   def index
     @memos = current_user.memos.includes(:user).order(created_at: :desc)
@@ -21,9 +22,15 @@ class MemosController < ApplicationController
     end
   end
 
+  def show; end
+
   private
 
   def memo_params
     params.require(:memo).permit(:title, :content)
+  end
+
+  def set_memo
+    @memo = current_user.memos.find(params[:id])
   end
 end
