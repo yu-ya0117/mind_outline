@@ -97,4 +97,19 @@ class MemosControllerTest < ActionDispatch::IntegrationTest
     get memo_url(@memo)
     assert_redirected_to new_user_session_url
   end
+
+  test 'メモ詳細画面に子メモが表示される' do
+    sign_in @user
+
+    child_memo = @memo.children.create!(
+      user: @user,
+      title: '子メモタイトル',
+      content: '子メモ内容'
+    )
+
+    get memo_url(@memo)
+    assert_response :success
+    assert_match child_memo.title, response.body
+    assert_match child_memo.content, response.body
+  end
 end

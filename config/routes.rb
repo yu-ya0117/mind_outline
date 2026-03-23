@@ -5,5 +5,9 @@ Rails.application.routes.draw do
 
   root 'homes#index'
 
-  resources :memos
+  resources :memos do
+    member do
+      post :save_child
+    end
+  end
 end
