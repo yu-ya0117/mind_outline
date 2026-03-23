@@ -40,7 +40,7 @@ class MemosController < ApplicationController
   end
 
   def destroy
-    @memo.destroy
+    @memo.destroy!
     redirect_to memos_path, notice: 'メモを削除しました。'
   end
 
