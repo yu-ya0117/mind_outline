@@ -2,6 +2,10 @@
   <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
     <h2 class="mb-6 text-2xl font-bold text-gray-800">メモ編集</h2>
 
+    <div class="mb-8">
+      <%= render "memo_tree", memo: @memo %>
+    </div>
+
     <% if @memo.errors.any? %>
       <div class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
         <p class="font-semibold"><%= pluralize(@memo.errors.count, "error") %> <%= @memo.errors.count %>件のエラーがあります。</p>
@@ -29,5 +33,33 @@
         <%= link_to "戻る", memo_path(@memo), class: "rounded-lg border border-gray-300 px-4 py-2 font-semibold text-gray-700 hover:bg-gray-50" %>
       </div>
     <% end %>
+
+    <div class="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <h3 class="mb-4 text-xl font-bold text-gray-800">子メモを追加</h3>
+      <% if @child_memo&.errors&.any? %>
+        <div class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+          <p class="font-semibold">子メモに<%= @child_memo.errors.count %>件のエラーがあります。</p>
+          <ul class="mt-2 list-disc pl-5">
+            <% @child_memo.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= form_with model: @child_memo, url: save_child_memo_path(@memo), local: true do |f| %>
+        <div class="mb-4">
+          <%= f.label :title, "タイトル", class: "mb-2 block text-sm font-semibold text-gray-700" %>
+          <%= f.text_field :title, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+        </div>
+
+        <div class="mb-4">
+          <%= f.label :content, "内容", class: "mb-2 block text-sm font-semibold text-gray-700" %>
+          <%= f.text_area :content, rows: 4, class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+        </div>
+
+        <%= f.submit "子メモを追加", class: "rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700" %>
+      <% end %>
+    </div>
   </div>
 </div>

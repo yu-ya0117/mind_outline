@@ -1,0 +1,19 @@
+<div class="mb-8 rounded-xl bg-gray-50 p-4 text-gray-800">
+  <p class="mb-3 text-sm font-semibold text-gray-500">親子メモの確認</p>
+
+  <div class="flex mt-1">
+    <p class="font-semibold"><%= @memo.title %></p>
+    <p class="text-gray-700">：<%= simple_format(@memo.content) %>
+  </div>
+
+  <% if @memo.children.any? %>
+    <div class="mt-4 space-y-3">
+      <% @memo.children.each do |child| %>
+        <div class="flex ml-6 border-l-2 border-gray-300 pl-4">
+          <p class="font-semibold text-gray-800"><%= child.title %></p>
+          <p class="text-gray-700">：<%= simple_format(child.content) %></p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
