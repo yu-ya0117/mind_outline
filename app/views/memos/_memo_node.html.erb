@@ -1,0 +1,12 @@
+<div class="<%= depth.zero? ? '' : 'ml-6 mt-4 border-l-2 border-gray-300 pl-4' %>">
+  <p class="font-semibold text-gray-800 text-lg"><%= memo.title %></p>
+  <div class="mt-1 text-gray-700 text-sm">
+    <%= simple_format(memo.content) %>
+  </div>
+
+  <% if memo.children.any? %>
+    <% memo.children.each do |child| %>
+      <%= render "memo_node", memo: child, depth: depth + 1 %>
+    <% end %>
+  <% end %>
+</div>
