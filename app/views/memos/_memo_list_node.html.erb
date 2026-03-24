@@ -1,8 +1,17 @@
-<div class="ml-4 border-l-2 border-gray-300 pl-4">
-  <p class="font-semibold text-gray-800"><%= memo.title %></p>
+<div class="ml-4 border-l-2 border-gray-300 pl-4" data-controller="tree-toggle">
+  <button
+    type="button"
+    class="flex items-center gap-2 text-left font-semibold text-gray-800"
+    data-action="click->tree-toggle#toggle"
+  >
+    <% if memo.children.present? %>
+      <span data-tree-toggle-target="icon">▶</span>
+    <% end %>
+    <%= memo.title %>
+  </button>
 
   <% if memo.children.any? %>
-    <div class="mt-3 space-y-3">
+    <div class="mt-3 space-y-3 hidden" data-tree-toggle-target="children">
       <% memo.children.each do |child| %>
         <%= render "memo_list_node", memo: child %>
       <% end %>

@@ -1,16 +1,23 @@
-<div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-  <div class="flex items-start justify-between gap-4">
-    <div class="min-w-0">
-      <p class="text-lg font-semibold text-gray-800"><%= memo.title %></p>
-    </div>
+<div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm" data-controller="tree-toggle">
+  <div class="flex items-center justify-between gap-4">
+    <button
+      type="button"
+      class="flex items-center gap-2 text-left font-semibold text-gray-800"
+      data-action="click->tree-toggle#toggle"
+    >
+      <% if memo.children.any? %>
+        <span data-tree-toggle-target="icon">▶</span>
+      <% else %>
+        <span class="w-4"></span>
+      <% end %>
+      <span><%= memo.title %></span>
+    </button>
 
-    <div class="shrink-0">
-      <%= link_to "詳細", memo_path(memo), class: "rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700" %>
-    </div>
+    <%= link_to "詳細", memo_path(memo), class: "rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700" %>
   </div>
 
   <% if memo.children.any? %>
-    <div class="mt-4 space-y-3">
+    <div class="mt-4 space-y-3 hidden" data-tree-toggle-target="children">
       <% memo.children.each do |child| %>
         <%= render "memo_list_node", memo: child %>
       <% end %>
