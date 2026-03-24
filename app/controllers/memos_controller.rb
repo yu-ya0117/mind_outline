@@ -5,7 +5,7 @@ class MemosController < ApplicationController
   before_action :set_memo, only: %i[show edit update destroy save_child]
 
   def index
-    @memos = current_user.memos.includes(:user).order(created_at: :desc)
+    @memos = current_user.memos.roots.order(created_at: :desc)
   end
 
   def new
