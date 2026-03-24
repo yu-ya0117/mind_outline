@@ -16,3 +16,6 @@
 /config/master.key
 .env
 .DS_Store
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
