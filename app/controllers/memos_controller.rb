@@ -23,10 +23,12 @@ class MemosController < ApplicationController
   end
 
   def show
+    @tree_root = @memo.root
     @children = @memo.children
   end
 
   def edit
+    @tree_root = @memo.root
     @child_memo = current_user.memos.new
   end
 
@@ -34,6 +36,7 @@ class MemosController < ApplicationController
     if @memo.update(memo_params)
       redirect_to memo_path(@memo), notice: 'メモを更新しました。'
     else
+      @tree_root = @memo.root
       @child_memo = current_user.memos.new
       render :edit, status: :unprocessable_entity
     end
@@ -51,6 +54,7 @@ class MemosController < ApplicationController
     if @child_memo.save
       redirect_to edit_memo_path(@memo), notice: '子メモを追加しました。'
     else
+      @tree_root = @memo.root
       render :edit, status: :unprocessable_entity
     end
   end
