@@ -78,3 +78,5 @@ gem 'minitest', '~> 5.25'
 gem 'brakeman', '~> 8.0', '>= 8.0.4'
 
 gem 'ancestry'
+
+gem 'openai', '~> 0.56.0'
