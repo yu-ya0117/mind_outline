@@ -3,72 +3,90 @@
 require 'openai'
 
 class AiTextService
-  TAB_PROMPTS = {
-    'organize' => <<~PROMPT,
-      あなたは文章整理が得意なアシスタントです。
-      入力されたメモを、必ず3階層以内のアウトライン形式で整理してください。
-
-      ルール
-      ・1行につき1項目
-      ・インデントで階層を表す
-      ・階層は最大3階層まで
-      ・4階層以上は作らない
-      ・箇条書き記号は「-」を使う
-    PROMPT
-    'summarize' => <<~PROMPT,
-      あなたは文章要約が得意なアシスタントです。
-      入力された内容を、要点がわかるように簡潔に要約してください。
-    PROMPT
-    'generate' => <<~PROMPT
-      あなたは文章作成が得意なアシスタントです。
-      入力されたメモをもとに、自然で読みやすい文章を作成してください。
-    PROMPT
+  SYSTEM_PROMPTS = {
+    'organize' => 'あなたは思考整理が得意なアシスタントです。内容を勝手に増やさず、構造化を優先してください。',
+    'summary' => 'あなたは要点整理が得意なアシスタントです。簡潔で重複のない要約を作成してください。',
+    'writing' => 'あなたは業務文章の作成が得意なアシスタントです。自然で読みやすい文章を作成してください。'
   }.freeze
 
-  def self.generate(tab:, source_text:, user_prompt:, client: nil)
-    new(
-      tab: tab,
-      source_text: source_text,
-      user_prompt: user_prompt,
-      client: client
-    ).generate
+  def generate(tab:, content:, format: nil, tone: nil)
+    response = request_chat_completion(tab:, content:, format:, tone:)
+    extract_content(response)
   rescue StandardError => e
-    "AI生成中にエラーが発生しました: #{e.message}"
-  end
-
-  def initialize(tab:, source_text:, user_prompt:, client: nil)
-    @tab = tab
-    @source_text = source_text.to_s
-    @user_prompt = user_prompt.to_s
-    @client = client || OpenAI::Client.new(api_key: ENV['OPENAI_API_KEY'])
-  end
-
-  def generate
-    response = @client.responses.create(
-      model: :"gpt-4.1-mini",
-      input: build_input
-    )
-
-    response.output_text
+    handle_error(e)
   end
 
   private
 
-  attr_reader :tab, :source_text, :user_prompt
-
-  def build_input
-    <<~INPUT
-      #{system_prompt}
-
-      【元のメモ】
-      #{source_text}
-
-      【追加指示】
-      #{user_prompt}
-    INPUT
+  def request_chat_completion(tab:, content:, format:, tone:)
+    client.chat.completions.create(
+      model: 'gpt-4o-mini',
+      messages: [
+        { role: 'system', content: system_prompt(tab) },
+        { role: 'user', content: build_prompt(tab:, content:, format:, tone:) }
+      ]
+    )
   end
 
-  def system_prompt
-    TAB_PROMPTS.fetch(tab, 'あなたは優秀なアシスタントです。')
+  def extract_content(response)
+    response.choices[0].message.content
+  end
+
+  def handle_error(error)
+    Rails.logger.error "OpenAI API Error: #{error.message}"
+    'エラーメッセージ'
+  end
+
+  def client
+    OpenAI::Client.new(
+      api_key: ENV.fetch('OPENAI_API_KEY')
+    )
+  end
+
+  def build_prompt(tab:, content:, format:, tone:)
+    case tab
+    when 'organize'
+      organize_prompt(content)
+    when 'summary'
+      summary_prompt(content)
+    when 'writing'
+      writing_prompt(content, format, tone)
+    else
+      raise ArgumentError, "Unknown tab: #{tab}"
+    end
+  end
+
+  def organize_prompt(content)
+    <<~PROMPT
+      次のメモを階層構造のアウトラインに整理してください。
+      インデントで階層を表現し、1行に1項目で出力してください。
+
+      【メモ】
+      #{content}
+    PROMPT
+  end
+
+  def summary_prompt(content)
+    <<~PROMPT
+      次のメモを簡潔に要約してください。
+      箇条書きで3〜5点にまとめてください。
+
+      【メモ】
+      #{content}
+    PROMPT
+  end
+
+  def writing_prompt(content, format, tone)
+    <<~PROMPT
+      次のメモをもとに#{format || '文章'}を作成してください。
+      文体は#{tone || '丁寧'}でお願いします。
+
+      【メモ】
+      #{content}
+    PROMPT
+  end
+
+  def system_prompt(tab)
+    SYSTEM_PROMPTS.fetch(tab)
   end
 end

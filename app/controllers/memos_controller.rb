@@ -2,7 +2,8 @@
 
 class MemosController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_memo, only: %i[show edit update destroy save_child]
+  before_action :set_memo, only: %i[show edit update destroy save_child ai_tools ai_generate]
+  before_action :set_tree_root, only: %i[show edit ai_tools ai_generate]
 
   def index
     @memos = current_user.memos.roots.order(created_at: :desc)
@@ -23,12 +24,10 @@ class MemosController < ApplicationController
   end
 
   def show
-    @tree_root = @memo.root
     @children = @memo.children
   end
 
   def edit
-    @tree_root = @memo.root
     @child_memo = current_user.memos.new
   end
 
@@ -59,7 +58,28 @@ class MemosController < ApplicationController
     end
   end
 
+  def ai_tools
+    @tab = params[:tab].presence || 'organize'
+  end
+
+  def ai_generate
+    @tab = params[:tab].presence || 'organize'
+
+    @result = AiTextService.new.generate(
+      tab: @tab,
+      content: @memo.ai_source_text,
+      format: params[:format_type],
+      tone: params[:tone]
+    )
+
+    render :ai_tools
+  end
+
   private
+
+  def set_tree_root
+    @tree_root = @memo.root
+  end
 
   def set_memo
     @memo = current_user.memos.find(params[:id])

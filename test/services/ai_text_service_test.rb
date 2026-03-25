@@ -27,42 +27,48 @@ class AiTextServiceTest < ActiveSupport::TestCase
   end
 
   test 'generate がAIの返答テキストを返す' do
-    fake_client = FakeClient.new('生成結果テスト')
+    fake_message = Struct.new(:content).new('- 自己理解')
+    fake_choice = Struct.new(:message).new(fake_message)
+    fake_response = Struct.new(:choices).new([fake_choice])
 
-    result = AiTextService.generate(
-      tab: 'organize',
-      source_text: '元メモ本文',
-      user_prompt: '整理してください',
-      client: fake_client
-    )
+    service = AiTextService.new
 
-    assert_equal '生成結果テスト', result
+    service.define_singleton_method(:request_chat_completion) do |**_kwargs|
+      fake_response
+    end
+
+    result = service.generate(tab: 'organize', content: '自己理解')
+
+    assert_equal '- 自己理解', result
   end
 
-  test '存在しないタブでもエラーにならず結果を返す' do
-    fake_client = FakeClient.new('デフォルト結果')
-
-    result = AiTextService.generate(
-      tab: 'unknown',
-      source_text: '元メモ本文',
-      user_prompt: '自由に処理してください',
-      client: fake_client
-    )
-
-    assert_equal 'デフォルト結果', result
+  test '存在しないタブでもエラーメッセージを返す' do
+    result = AiTextService.new.generate(tab: 'unknown', content: '自己理解')
+    assert_equal 'エラーメッセージ', result
   end
 
   test 'APIエラー時はエラーメッセージを返す' do
-    fake_client = FakeClient.new(nil, error: StandardError.new('接続失敗'))
+    error_client = Object.new
 
-    result = AiTextService.generate(
-      tab: 'organize',
-      source_text: '元メモ本文',
-      user_prompt: '整理してください',
-      client: fake_client
-    )
+    def error_client.chat
+      self
+    end
 
-    assert_match 'AI生成中にエラーが発生しました', result
-    assert_match '接続失敗', result
+    def error_client.completions
+      self
+    end
+
+    def error_client.create(*)
+      raise StandardError, 'API error'
+    end
+
+    service = AiTextService.new
+
+    service.define_singleton_method(:client) do
+      error_client
+    end
+
+    result = service.generate(tab: 'organize', content: '自己理解')
+    assert_equal 'エラーメッセージ', result
   end
 end

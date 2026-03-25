@@ -1,0 +1,67 @@
+<div class="mx-auto max-w-3xl px-4 py-8">
+  <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-6 text-2xl font-bold text-gray-800">AI処理</h2>
+
+    <div class="mb-6 flex gap-2 border-b border-gray-200">
+      <%= link_to "AI整理",
+          ai_tools_memo_path(@memo, tab: "organize"),
+          class: "px-4 py-2 text-sm font-medium rounded-t-lg #{@tab == 'organize' ? 'bg-green-100 text-green-700 border border-b-0 border-gray-200' : 'text-gray-600 hover:text-gray-800'}" %>
+
+      <%= link_to "AI要約",
+          ai_tools_memo_path(@memo, tab: "summary"),
+          class: "px-4 py-2 text-sm font-medium rounded-t-lg #{@tab == 'summary' ? 'bg-green-100 text-green-700 border border-b-0 border-gray-200' : 'text-gray-600 hover:text-gray-800'}" %>
+
+      <%= link_to "文章生成",
+          ai_tools_memo_path(@memo, tab: "writing"),
+          class: "px-4 py-2 text-sm font-medium rounded-t-lg #{@tab == 'writing' ? 'bg-green-100 text-green-700 border border-b-0 border-gray-200' : 'text-gray-600 hover:text-gray-800'}" %>
+    </div>
+
+    <div class="mb-4 text-sm text-gray-600">
+      <% case @tab %>
+      <% when "organize" %>
+        <p>元メモをもとに、内容を階層構造で整理します。</p>
+      <% when "summary" %>
+        <p>元メモの要点を短くまとめます。</p>
+      <% when "writing" %>
+        <p>元メモをもとに、用途に応じた文章を生成します。</p>
+      <% end %>
+    </div>
+
+    <div class="memo-source mb-6">
+      <h3 class="mb-4 text-xl font-bold text-gray-800">元メモ</h3>
+      <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
+        <%= render "memo_tree", memo: @tree_root, current_memo: nil %>
+      </div>
+    </div>
+
+    <%= form_with(url: ai_generate_memo_path(@memo), method: :post, data: { turbo: false }, local: true, class: "mb-6") do |f| %>
+      <%= hidden_field_tag :tab, @tab %>
+
+      <% if @tab == "writing" %>
+        <div class="mb-4">
+          <%= label_tag :format_type, "文章の種類", class: "mb-1 block text-sm font-medium text-gray-700" %>
+          <%= select_tag :format_type,
+              options_for_select([["日報", "日報"], ["相談文", "相談文"], ["報告文", "報告文"]]),
+              class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+        </div>
+
+        <div class="mb-6">
+          <%= label_tag :tone, "文体", class: "mb-1 block text-sm font-medium text-gray-700" %>
+          <%= select_tag :tone,
+              options_for_select([["丁寧", "丁寧"], ["ややカジュアル", "ややカジュアル"]]),
+              class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+        </div>
+      <% end %>
+
+      <%= f.submit "生成する", class: "rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700" %>
+    <% end %>
+
+    <div id="ai_result">
+      <%= render "ai_result", result: @result %>
+    </div>
+
+    <div class="mt-6">
+      <%= link_to "一覧へ戻る", memos_path, class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
+    </div>
+  </div>
+</div>
