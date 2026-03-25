@@ -20,6 +20,7 @@
           turbo_confirm: @memo.children.any? ? "子メモもまとめて削除されます。本当に削除しますか？" : "本当に削除しますか？"
         },
         class: "rounded-lg bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-700" %>
+      <%= link_to "AI処理", ai_tools_memo_path(@memo), class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
       <%= link_to "一覧へ戻る", memos_path, class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
     </div>
   </div>

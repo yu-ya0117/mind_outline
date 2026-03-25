@@ -6,4 +6,8 @@ class Memo < ApplicationRecord
   belongs_to :user
 
   validates :title, presence: true
+
+  def ai_source_text
+    [title, content].reject(&:blank?).join("\n")
+  end
 end

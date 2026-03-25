@@ -34,7 +34,7 @@
       </div>
     <% end %>
 
-    <div class="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="mt-8 mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 text-xl font-bold text-gray-800">子メモを追加</h3>
       <% if @child_memo&.errors&.any? %>
         <div class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
@@ -61,5 +61,6 @@
         <%= f.submit "子メモを追加", class: "rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700" %>
       <% end %>
     </div>
+    <%= link_to "AI処理", ai_tools_memo_path(@memo), class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
   </div>
 </div>
