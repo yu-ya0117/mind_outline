@@ -94,15 +94,38 @@ class AiTextService
   end
 
   def writing_prompt(content, format, tone)
-    <<~PROMPT
-      次のメモをもとに#{format || '文章'}を作成してください。
-      文体は#{tone || '丁寧'}で、自然で読みやすい日本語にしてください。
-      内容はメモに沿って構成し、必要に応じて自然な接続を補ってください。
-      #{plain_output_rule}
+    prompt = <<~PROMPT
+      次のメモをもとに「#{format || '文章'}」を作成してください。
+
+      文体は「#{tone || '丁寧'}」にしてください。
+      #{tone_guide}
+
+      文章の目的は次の通りです。
+      #{format_guide}
+
+      余計な見出しや前置きは不要です。完成した本文だけを出力してください。
 
       【メモ内容】
       #{content}
     PROMPT
+
+    Rails.logger.debug "writing_prompt: #{prompt.inspect}"
+    prompt
+  end
+
+  def tone_guide
+    <<~TEXT
+      - 「丁寧」の場合は、です・ます調で落ち着いた表現にしてください。
+      - 「ややカジュアル」の場合は、柔らかく親しみやすい表現にしてください。ただし砕けすぎないでください。
+    TEXT
+  end
+
+  def format_guide
+    <<~TEXT
+      - 日報: その日の内容を簡潔に共有する
+      - 相談文: 相手に意見や助言を求める文章にする
+      - 報告文: 事実や状況を整理して伝える文章にする
+    TEXT
   end
 
   def system_prompt(tab)
