@@ -38,6 +38,8 @@ class AiTextService
   end
 
   def client
+    raise 'OPENAI_API_KEY is missing' if ENV['OPENAI_API_KEY'].blank?
+
     OpenAI::Client.new(
       api_key: ENV.fetch('OPENAI_API_KEY')
     )
