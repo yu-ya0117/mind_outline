@@ -65,11 +65,21 @@ class MemosController < ApplicationController
   def ai_generate
     @tab = params[:tab].presence || 'organize'
     @result = AiTextService.new.generate(**ai_generate_params)
+    log_ai_generate_params
 
     render :ai_tools
   end
 
   private
+
+  def log_ai_generate_params
+    Rails.logger.debug(
+      "tab: #{params[:tab].inspect}, " \
+      "format_type: #{params[:format_type].inspect}, " \
+      "tone: #{params[:tone].inspect}, " \
+      "result: #{@result.inspect}"
+    )
+  end
 
   def set_tree_root
     @tree_root = @memo.root
