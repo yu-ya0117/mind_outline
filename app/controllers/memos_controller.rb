@@ -64,13 +64,7 @@ class MemosController < ApplicationController
 
   def ai_generate
     @tab = params[:tab].presence || 'organize'
-
-    @result = AiTextService.new.generate(
-      tab: @tab,
-      content: @memo.ai_source_text,
-      format: params[:format_type],
-      tone: params[:tone]
-    )
+    @result = AiTextService.new.generate(**ai_generate_params)
 
     render :ai_tools
   end
@@ -87,5 +81,18 @@ class MemosController < ApplicationController
 
   def memo_params
     params.require(:memo).permit(:title, :content)
+  end
+
+  def ai_generate_params
+    {
+      tab: @tab,
+      content: ai_source_text_for_tab,
+      format: params[:format_type],
+      tone: params[:tone]
+    }
+  end
+
+  def ai_source_text_for_tab
+    @tab == 'organize' ? @memo.ai_tree_source_text : @memo.ai_source_text
   end
 end

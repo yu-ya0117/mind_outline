@@ -112,4 +112,104 @@ class MemosControllerTest < ActionDispatch::IntegrationTest
     assert_match child_memo.title, response.body
     assert_match child_memo.content, response.body
   end
+
+  # test 'ai_generate は organize のとき ai_tree_source_text を使う' do
+  #   sign_in @user
+
+  #   expected_content = @memo.ai_tree_source_text
+  #   received_args = nil
+
+  #   fake_service = Object.new
+  #   fake_service.define_singleton_method(:generate) do |**kwargs|
+  #     received_args = kwargs
+  #     '- 整理結果'
+  #   end
+
+  #   AiTextService.method(:new)
+
+  #   AiTextService.define_singleton_method(:new) do
+  #     fake_service
+  #   end
+
+  #   post ai_generate_memo_path(@memo), params: { tab: 'organize' }
+  #   assert_response :success
+
+  #   assert_equal(
+  #     {
+  #       tab: 'organize',
+  #       content: expected_content,
+  #       format: nil,
+  #       tone: nil
+  #     },
+  #     received_args
+  #   )
+  # end
+
+  # test 'ai_generate は summary のとき ai_source_text を使う' do
+  #   sign_in @user
+
+  #   expected_content = @memo.ai_source_text
+  #   received_args = nil
+
+  #   fake_service = Object.new
+  #   fake_service.define_singleton_method(:generate) do |**kwargs|
+  #     received_args = kwargs
+  #     '要約結果'
+  #   end
+
+  #   AiTextService.method(:new)
+
+  #   AiTextService.define_singleton_method(:new) do
+  #     fake_service
+  #   end
+
+  #   post ai_generate_memo_path(@memo), params: { tab: 'summary' }
+  #   assert_response :success
+
+  #   assert_equal(
+  #     {
+  #       tab: 'summary',
+  #       content: expected_content,
+  #       format: nil,
+  #       tone: nil
+  #     },
+  #     received_args
+  #   )
+  # end
+
+  # test 'ai_generate は writing のとき format と tone を渡す' do
+  #   sign_in @user
+
+  #   expected_content = @memo.ai_source_text
+  #   received_args = nil
+
+  #   fake_service = Object.new
+  #   fake_service.define_singleton_method(:generate) do |**kwargs|
+  #     received_args = kwargs
+  #     '文章生成結果'
+  #   end
+
+  #   AiTextService.method(:new)
+
+  #   AiTextService.define_singleton_method(:new) do
+  #     fake_service
+  #   end
+
+  #   post ai_generate_memo_path(@memo), params: {
+  #     tab: 'writing',
+  #     format_type: '日報',
+  #     tone: '丁寧'
+  #   }
+  #   assert_response :success
+
+  #   assert_equal(
+  #     {
+  #       tab: 'writing',
+  #       content: expected_content,
+  #       format: '日報',
+  #       tone: '丁寧'
+  #     },
+  #     received_args
+  #   )
+  # end
 end
