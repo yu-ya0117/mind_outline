@@ -10,7 +10,7 @@ class AiTextServiceTest < ActiveSupport::TestCase
 
     service = AiTextService.new
 
-    service.define_singleton_method(:request_chat_completion) do |**_kwargs|
+    service.define_singleton_method(:request_chat_completion) do |_prompt_builder|
       fake_response
     end
 
