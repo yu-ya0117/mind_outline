@@ -12,9 +12,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 20_260_320_073_136) do
+ActiveRecord::Schema[7.2].define(version: 20_260_327_052_329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension 'plpgsql'
+
+  create_table 'generated_texts', force: :cascade do |t|
+    t.bigint 'memo_id', null: false
+    t.integer 'kind', null: false
+    t.text 'content', null: false
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['memo_id'], name: 'index_generated_texts_on_memo_id'
+  end
 
   create_table 'memos', force: :cascade do |t|
     t.bigint 'user_id', null: false
@@ -37,5 +46,6 @@ ActiveRecord::Schema[7.2].define(version: 20_260_320_073_136) do
     t.index ['email'], name: 'index_users_on_email', unique: true
   end
 
+  add_foreign_key 'generated_texts', 'memos'
   add_foreign_key 'memos', 'users'
 end

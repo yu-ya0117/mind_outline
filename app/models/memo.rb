@@ -3,6 +3,7 @@
 class Memo < ApplicationRecord
   has_ancestry
 
+  has_many :generated_texts, dependent: :destroy
   belongs_to :user
 
   validates :title, presence: true
