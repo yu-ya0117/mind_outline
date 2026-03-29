@@ -74,4 +74,19 @@ class GeneratedTextsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :redirect
   end
+
+  test '生成結果保存履歴一覧を表示できる' do
+    get memo_generated_texts_path(@memo)
+    assert_response :success
+    assert_match '生成結果保存履歴', response.body
+  end
+
+  test '生成結果詳細を表示できる' do
+    generated_text = generated_texts(:one)
+
+    get memo_generated_text_path(generated_text.memo, generated_text)
+    assert_response :success
+    assert_match '生成結果詳細', response.body
+    assert_match generated_text.content, response.body
+  end
 end

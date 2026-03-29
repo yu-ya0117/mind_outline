@@ -1,9 +1,9 @@
 one:
   memo: one
   kind: 0
-  content: テスト用生成結果
+  content: ユーザー1の生成結果
 
 two:
   memo: two
   kind: 1
-  content: 要約テスト
+  content: ユーザー2の生成結果

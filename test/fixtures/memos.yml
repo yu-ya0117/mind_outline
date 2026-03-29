@@ -1,9 +1,9 @@
 one:
   user: one
-  title: Rails学習
-  content: show画面を作成した
+  title: ユーザー1のタイトル
+  content: ユーザー1のメモ
 
 two:
   user: two
-  title: 他人のメモ
-  content: これは別ユーザーのメモ
+  title: ユーザー2のタイトル
+  content: ユーザー2のメモ
