@@ -7,4 +7,6 @@ class GeneratedText < ApplicationRecord
 
   validates :content, presence: true
   validates :kind, presence: true
+
+  scope :for_user, ->(user) { joins(:memo).where(memos: { user_id: user.id }) }
 end

@@ -11,6 +11,6 @@ Rails.application.routes.draw do
       get  :ai_tools
       post :ai_generate
     end
-    resources :generated_texts, only: [:create]
+    resources :generated_texts, only: [:index, :create, :show]
   end
 end

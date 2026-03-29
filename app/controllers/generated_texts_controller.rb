@@ -3,6 +3,15 @@
 class GeneratedTextsController < ApplicationController
   before_action :authenticate_user!
 
+  def index
+    @memo = Memo.find(params[:memo_id])
+    @generated_texts = GeneratedText.for_user(current_user).order(created_at: :desc)
+  end
+
+  def show
+    @generated_text = GeneratedText.for_user(current_user).find(params[:id])
+  end
+
   def create
     @memo = Memo.find(params[:memo_id])
     generated_text = @memo.generated_texts.build(generated_text_params)
