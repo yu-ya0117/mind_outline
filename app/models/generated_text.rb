@@ -3,7 +3,7 @@
 class GeneratedText < ApplicationRecord
   belongs_to :memo
 
-  enum :kind, { organize: 0, summarize: 1, writing: 2 }
+  enum :kind, { organize: 0, summary: 1, writing: 2 }
 
   validates :content, presence: true
   validates :kind, presence: true
