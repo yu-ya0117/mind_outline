@@ -11,55 +11,29 @@ class GeneratedTextsControllerTest < ActionDispatch::IntegrationTest
     @memo = memos(:one)
   end
 
-  test 'AI整理の生成結果を保存できる' do
-    assert_difference('GeneratedText.count', 1) do
-      post memo_generated_texts_path(@memo), params: {
-        generated_text: {
-          kind: 'organize',
-          content: "- AI処理\n  - 内容: テスト"
+  test '生成結果を保存できる' do
+    cases = [
+      { kind: 'organize', content: "- AI処理\n  - 内容: テスト" },
+      { kind: 'summary', content: 'これは要約結果です。' },
+      { kind: 'writing', content: 'これは文章生成結果です。' }
+    ]
+
+    cases.each do |item|
+      assert_difference('GeneratedText.count', 1) do
+        post memo_generated_texts_path(@memo), params: {
+          generated_text: {
+            kind: item[:kind],
+            content: item[:content]
+          }
         }
-      }
+      end
+
+      generated_text = GeneratedText.last
+      assert_equal @memo.id, generated_text.memo_id
+      assert_equal item[:kind], generated_text.kind
+      assert_equal item[:content], generated_text.content
+      assert_response :redirect
     end
-
-    generated_text = GeneratedText.last
-    assert_equal @memo.id, generated_text.memo_id
-    assert_equal 'organize', generated_text.kind
-    assert_equal "- AI処理\n  - 内容: テスト", generated_text.content
-    assert_response :redirect
-  end
-
-  test 'AI要約の生成結果を保存できる' do
-    assert_difference('GeneratedText.count', 1) do
-      post memo_generated_texts_path(@memo), params: {
-        generated_text: {
-          kind: 'summary',
-          content: 'これは要約結果です。'
-        }
-      }
-    end
-
-    generated_text = GeneratedText.last
-    assert_equal @memo.id, generated_text.memo_id
-    assert_equal 'summary', generated_text.kind
-    assert_equal 'これは要約結果です。', generated_text.content
-    assert_response :redirect
-  end
-
-  test '文章生成の生成結果を保存できる' do
-    assert_difference('GeneratedText.count', 1) do
-      post memo_generated_texts_path(@memo), params: {
-        generated_text: {
-          kind: 'writing',
-          content: 'これは文章生成結果です。'
-        }
-      }
-    end
-
-    generated_text = GeneratedText.last
-    assert_equal @memo.id, generated_text.memo_id
-    assert_equal 'writing', generated_text.kind
-    assert_equal 'これは文章生成結果です。', generated_text.content
-    assert_response :redirect
   end
 
   test 'contentが空だと保存できない' do
@@ -68,11 +42,13 @@ class GeneratedTextsControllerTest < ActionDispatch::IntegrationTest
         generated_text: {
           kind: 'organize',
           content: ''
-        }
+        },
+        tab: 'organize'
       }
     end
 
-    assert_response :redirect
+    assert_response :unprocessable_entity
+    assert_match '生成結果の保存に失敗しました', response.body
   end
 
   test '生成結果保存履歴一覧を表示できる' do
@@ -88,5 +64,36 @@ class GeneratedTextsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match '生成結果詳細', response.body
     assert_match generated_text.content, response.body
+  end
+
+  test '生成結果を保存できたらメモ詳細画面へリダイレクトし、flashが表示される' do
+    assert_difference('GeneratedText.count', 1) do
+      post memo_generated_texts_path(@memo), params: {
+        generated_text: {
+          content: '生成された文章です',
+          kind: 'writing'
+        },
+        tab: 'writing'
+      }
+    end
+
+    assert_redirected_to memo_path(@memo)
+    follow_redirect!
+    assert_match '生成結果を保存しました', response.body
+  end
+
+  test '生成結果の保存に失敗したらai_toolsを再表示する' do
+    assert_no_difference('GeneratedText.count') do
+      post memo_generated_texts_path(@memo), params: {
+        generated_text: {
+          content: '',
+          kind: 'writing'
+        },
+        tab: 'writing'
+      }
+    end
+
+    assert_response :unprocessable_entity
+    assert_match '生成結果の保存に失敗しました', response.body
   end
 end

@@ -6,16 +6,7 @@
       <%= render "memo_tree", memo: @tree_root, current_memo: @memo %>
     </div>
 
-    <% if @memo.errors.any? %>
-      <div class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
-        <p class="font-semibold"><%= pluralize(@memo.errors.count, "error") %> <%= @memo.errors.count %>件のエラーがあります。</p>
-        <ul class="mt-2 list-disc pl-5">
-          <% @memo.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+    <%= render "shared/error_messages", resource: @memo %>
 
     <%= form_with model: @memo, local: true do |f| %>
       <div class="mb-4">
@@ -36,16 +27,7 @@
 
     <div class="mt-8 mb-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
       <h3 class="mb-4 text-xl font-bold text-gray-800">子メモを追加</h3>
-      <% if @child_memo&.errors&.any? %>
-        <div class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
-          <p class="font-semibold">子メモに<%= @child_memo.errors.count %>件のエラーがあります。</p>
-          <ul class="mt-2 list-disc pl-5">
-            <% @child_memo.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
-      <% end %>
+      <%= render "shared/error_messages", resource: @child_memo %>
 
       <%= form_with model: @child_memo, url: save_child_memo_path(@memo), local: true do |f| %>
         <div class="mb-4">

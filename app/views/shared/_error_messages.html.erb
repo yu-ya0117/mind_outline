@@ -1,0 +1,10 @@
+<% if resource.errors.any? %>
+  <div id="error_explanation" class="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+    <p class="font-semibold"><%= resource.errors.count %>件のエラーがあります</p>
+    <ul class="mt-2 list-disc pl-5 text-sm">
+      <% resource.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
