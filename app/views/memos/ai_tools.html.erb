@@ -30,7 +30,7 @@
     <div class="memo-source mb-6">
       <h3 class="mb-4 text-xl font-bold text-gray-800">元メモ</h3>
       <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <%= render "memo_tree", memo: @tree_root, current_memo: nil %>
+        <%= render "memos/memo_tree", memo: @tree_root, current_memo: nil %>
       </div>
     </div>
 
@@ -57,7 +57,7 @@
     <% end %>
 
     <div id="ai_result">
-      <%= render "ai_result", result: @result %>
+      <%= render "memos/ai_result", result: @result %>
     </div>
 
     <div class="mt-6 border-t border-gray-200 pt-4">

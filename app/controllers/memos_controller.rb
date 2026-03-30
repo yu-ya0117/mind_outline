@@ -19,6 +19,7 @@ class MemosController < ApplicationController
     if @memo.save
       redirect_to memos_path, notice: 'メモを作成しました。'
     else
+      flash.now[:alert] = 'メモの作成に失敗しました。'
       render :new, status: :unprocessable_entity
     end
   end
@@ -37,6 +38,7 @@ class MemosController < ApplicationController
     else
       @tree_root = @memo.root
       @child_memo = current_user.memos.new
+      flash.now[:alert] = 'メモの更新に失敗しました。'
       render :edit, status: :unprocessable_entity
     end
   end
@@ -54,6 +56,7 @@ class MemosController < ApplicationController
       redirect_to edit_memo_path(@memo), notice: '子メモを追加しました。'
     else
       @tree_root = @memo.root
+      flash.now[:alert] = '子メモの追加に失敗しました。'
       render :edit, status: :unprocessable_entity
     end
   end
@@ -66,6 +69,12 @@ class MemosController < ApplicationController
     @tab = params[:tab].presence || 'organize'
     @result = AiTextService.new.generate(**ai_generate_params)
     log_ai_generate_params
+
+    if @result.present?
+      flash.now[:notice] = ai_success_message(@tab)
+    else
+      flash.now[:alert] = 'AI処理に失敗しました。時間をおいて再度お試しください。'
+    end
 
     render :ai_tools
   end
@@ -104,5 +113,13 @@ class MemosController < ApplicationController
 
   def ai_source_text_for_tab
     @tab == 'organize' ? @memo.ai_tree_source_text : @memo.ai_source_text
+  end
+
+  def ai_success_message(tab)
+    {
+      'organize' => 'アウトラインを生成しました。',
+      'summary' => '要約を生成しました。',
+      'writing' => '文章を生成しました。'
+    }.fetch(tab, 'AI処理が完了しました。')
   end
 end

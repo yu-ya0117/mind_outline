@@ -23,7 +23,7 @@
 
   <% if memo.children.any? %>
     <% memo.children.each do |child| %>
-      <%= render "memo_node", memo: child, depth: depth + 1, current_memo: current_memo %>
+      <%= render "memos/memo_node", memo: child, depth: depth + 1, current_memo: current_memo %>
     <% end %>
   <% end %>
 </div>
