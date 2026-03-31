@@ -5,12 +5,8 @@ class GeneratedTextsController < ApplicationController
   before_action :set_memo, only: [:create]
 
   def index
-    if params[:memo_id].present?
-      @memo = current_user.memos.find(params[:memo_id])
-      @generated_texts = @memo.generated_texts.order(created_at: :desc)
-    else
-      @generated_texts = GeneratedText.for_user(current_user).order(created_at: :desc)
-    end
+    @memo = current_user.memos.find(params[:memo_id]) if params[:memo_id].present?
+    @generated_texts = GeneratedText.for_history_index(user: current_user, memo: @memo)
   end
 
   def show
