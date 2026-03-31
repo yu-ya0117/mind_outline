@@ -28,4 +28,8 @@ class Memo < ApplicationRecord
 
     lines.join("\n")
   end
+
+  def breadcrumb_title
+    path.pluck(:title).join(' > ')
+  end
 end

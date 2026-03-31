@@ -75,4 +75,15 @@ class MemoTest < ActiveSupport::TestCase
             内容: 思考整理の構造化を行う。
     TEXT
   end
+
+  test 'breadcrumb_titleは親子関係を含むタイトルを返す' do
+    user = users(:one)
+    parent = user.memos.create!(title: '親', content: '親の内容')
+    child = user.memos.create!(title: '子', content: '子の内容', parent: parent)
+    grandchild = user.memos.create!(title: '孫', content: '孫の内容', parent: child)
+
+    assert_equal '親', parent.breadcrumb_title
+    assert_equal '親 > 子', child.breadcrumb_title
+    assert_equal '親 > 子 > 孫', grandchild.breadcrumb_title
+  end
 end

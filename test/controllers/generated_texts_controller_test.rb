@@ -96,4 +96,18 @@ class GeneratedTextsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_match '生成結果の保存に失敗しました', response.body
   end
+
+  test '親メモの保存履歴に子メモの生成結果も表示される' do
+    parent = @user.memos.create!(title: '親', content: '親')
+    child  = @user.memos.create!(title: '子', content: '子', parent: parent)
+
+    parent.generated_texts.create!(kind: :summary, content: '親の要約')
+    child.generated_texts.create!(kind: :summary, content: '子の要約')
+
+    get memo_generated_texts_path(parent)
+
+    assert_response :success
+    assert_match '親の要約', response.body
+    assert_match '子の要約', response.body
+  end
 end
