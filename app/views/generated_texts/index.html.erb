@@ -24,7 +24,8 @@
 
               <div class="flex flex-col items-end gap-2">
                 <p class="text-sm text-gray-400"><%= l gt.created_at, format: :short %></p>
-                <%= link_to "詳細", memo_generated_text_path(gt.memo, gt), class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
+                <%= link_to "詳細", memo_generated_text_path(gt.memo, gt), 
+                    class: "rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700" %>
               </div>
             </div>
           </li>
@@ -37,9 +38,11 @@
 
     <div class="mt-8 flex gap-3 border-t border-gray-200 pt-4">
       <% if @memo.present? %>
-        <%= link_to "メモ詳細へ戻る", memo_path(@memo), class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
+        <%= link_to "メモ詳細へ戻る", memo_path(@memo), 
+            class: "rounded-lg bg-gray-200 px-4 py-2 text-gray-800 font-semibold hover:bg-gray-300" %>
       <% end %>
-      <%= link_to "ホームへ戻る", memos_path, class: "rounded-lg bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700" %>
+        <%= link_to "メモ一覧へ戻る", memos_path, 
+            class: "rounded-lg bg-gray-200 px-4 py-2 text-gray-800 font-semibold hover:bg-gray-300" %>
     </div>
   </div>
 </div>
