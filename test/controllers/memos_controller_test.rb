@@ -21,7 +21,8 @@ class MemosControllerTest < ActionDispatch::IntegrationTest
 
     get memos_path
     assert_response :success
-    assert_select 'h2', text: 'ホーム'
+    assert_match "こんにちは、#{@user.name}さん", response.body
+    assert_match 'ホーム', response.body
   end
 
   test 'ログイン済みなら新規メモ作成画面にアクセスできる' do

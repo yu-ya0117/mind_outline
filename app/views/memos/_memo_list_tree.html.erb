@@ -13,7 +13,8 @@
       <span><%= memo.title %></span>
     </button>
 
-    <%= link_to "詳細", memo_path(memo), class: "rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700" %>
+    <%= link_to "詳細", memo_path(memo),
+        class: "rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700" %>
   </div>
 
   <% if memo.children.any? %>
