@@ -19,6 +19,6 @@ class UserSessionsTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_select "input[name='user[remember_me]'][type='checkbox']"
-    assert_select 'label', text: '次回から自動的にログインする'
+    assert_select 'label', text: 'ログイン状態を保持する'
   end
 end
