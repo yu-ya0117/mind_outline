@@ -14,4 +14,6 @@ Rails.application.routes.draw do
     end
     resources :generated_texts, only: %i[index create show]
   end
+
+  get "/up", to: proc { [200, { "Content-Type" => "text/plain" }, ["OK"]] }
 end
