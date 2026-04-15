@@ -1,0 +1,76 @@
+name: CI                    # ワークフローの名前
+
+on:                         # トリガーイベント
+  push:
+    branches: [main] 
+  pull_request:
+    branches: [main]
+
+jobs:                       # ジョブの定義
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '.ruby-version'
+          bundler-cache: true
+
+      - name: Run RuboCop
+        run: bundle exec rubocop --parallel
+
+      - name: Run Brakeman
+        run: bundle exec brakeman --no-pager
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ${{ secrets.CI_POSTGRES_PASSWORD }}
+          POSTGRES_DB: mind_outline_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:${{ secrets.CI_POSTGRES_PASSWORD }}@localhost:5432/mind_outline_test
+      SECRET_KEY_BASE: dummy
+
+    steps:
+      - uses: actions/checkout@v4  # コードをチェックアウト
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3.6'  # 使用するRubyのバージョン
+          bundler-cache: true  # Bundlerのキャッシュを有効にする
+
+      - name: Set up database
+        run: |
+          bin/rails db:create
+          bin/rails db:schema:load
+
+      - name: Run tests
+        run: bin/rails test
+
+      - name: Upload test logs
+        if: failure()  # テストが失敗した場合にのみログをアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-logs
+          path: log/test.log
+          retention-days: 7  # アーティファクトの保持期間を7日に設定
