@@ -4,6 +4,8 @@ class Memo < ApplicationRecord
   has_ancestry
 
   has_many :generated_texts, dependent: :destroy
+  has_many :memo_tags, dependent: :destroy
+  has_many :tags, through: :memo_tags
   belongs_to :user
 
   validates :title, presence: true
