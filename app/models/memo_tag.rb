@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MemoTag < ApplicationRecord
   belongs_to :memo
   belongs_to :tag

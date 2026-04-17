@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateMemoTags < ActiveRecord::Migration[7.2]
   def change
     create_table :memo_tags do |t|
@@ -7,6 +9,6 @@ class CreateMemoTags < ActiveRecord::Migration[7.2]
       t.timestamps
     end
 
-    add_index :memo_tags, [:memo_id, :tag_id], unique: true
+    add_index :memo_tags, %i[memo_id tag_id], unique: true
   end
 end

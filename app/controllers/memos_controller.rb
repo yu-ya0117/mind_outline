@@ -14,19 +14,19 @@ class MemosController < ApplicationController
   end
 
   def create
-    @memo = current_user.memos.new(memo_params)
+    @memo = MemoCreator.new(
+      user: current_user,
+      memo_params: memo_params,
+      tag_names: params[:tag_names]
+    ).call
 
-    if @memo.save
-      redirect_to memos_path, notice: 'メモを作成しました。'
-    else
-      flash.now[:alert] = 'メモの作成に失敗しました。'
-      render :new, status: :unprocessable_entity
-    end
+    redirect_to memos_path, notice: 'メモを作成しました。'
+  rescue ActiveRecord::RecordInvalid
+    flash.now[:alert] = 'メモの作成に失敗しました。'
+    render :new, status: :unprocessable_entity
   end
 
-  def show
-    @children = @memo.children
-  end
+  def show = @children = @memo.children
 
   def edit
     @child_memo = current_user.memos.new
