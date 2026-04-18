@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MemosController < ApplicationController
+  include MemoAiActions
+
   before_action :authenticate_user!
   before_action :set_memo, only: %i[show edit update destroy save_child ai_tools ai_generate]
   before_action :set_tree_root, only: %i[show edit ai_tools ai_generate]
@@ -15,14 +17,12 @@ class MemosController < ApplicationController
   def new = @memo = current_user.memos.new
 
   def create
-    @memo = MemoCreator.new(
-      user: current_user,
-      memo_params: memo_params,
-      tag_names: params[:tag_names]
-    ).call
+    creator = build_memo_creator
+    @memo = creator.call
 
     redirect_to memos_path, notice: 'メモを作成しました。'
   rescue ActiveRecord::RecordInvalid
+    @memo = creator.memo
     flash.now[:alert] = 'メモの作成に失敗しました。'
     render :new, status: :unprocessable_entity
   end
@@ -59,32 +59,7 @@ class MemosController < ApplicationController
     end
   end
 
-  def ai_tools = @tab = params[:tab].presence || 'organize'
-
-  def ai_generate
-    @tab = params[:tab].presence || 'organize'
-    @result = AiTextService.new.generate(**ai_generate_params)
-    log_ai_generate_params
-
-    if @result.present?
-      flash.now[:notice] = ai_success_message(@tab)
-    else
-      flash.now[:alert] = 'AI処理に失敗しました。時間をおいて再度お試しください。'
-    end
-
-    render :ai_tools
-  end
-
   private
-
-  def log_ai_generate_params
-    Rails.logger.debug(
-      "tab: #{params[:tab].inspect}, " \
-      "format_type: #{params[:format_type].inspect}, " \
-      "tone: #{params[:tone].inspect}, " \
-      "result: #{@result.inspect}"
-    )
-  end
 
   def set_tree_root = @tree_root = @memo.root
 
@@ -92,25 +67,12 @@ class MemosController < ApplicationController
 
   def memo_params = params.require(:memo).permit(:title, :content)
 
-  def ai_generate_params
-    {
-      tab: @tab,
-      content: ai_source_text_for_tab,
-      format: params[:format_type],
-      tone: params[:tone]
-    }
-  end
-
-  def ai_source_text_for_tab
-    @tab == 'organize' ? @memo.ai_tree_source_text : @memo.ai_source_text
-  end
-
-  def ai_success_message(tab)
-    {
-      'organize' => 'アウトラインを生成しました。',
-      'summary' => '要約を生成しました。',
-      'writing' => '文章を生成しました。'
-    }.fetch(tab, 'AI処理が完了しました。')
+  def build_memo_creator
+    MemoCreator.new(
+      user: current_user,
+      memo_params: memo_params,
+      tag_names: params[:tag_names]
+    )
   end
 
   def memo_updater

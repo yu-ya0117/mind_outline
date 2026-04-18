@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 class MemoCreator
+  attr_reader :memo
+
   def initialize(user:, memo_params:, tag_names:)
     @user = user
     @memo_params = memo_params
     @tag_names = tag_names
+    @memo = @user.memos.build(@memo_params)
   end
 
   def call
-    memo = @user.memos.build(@memo_params)
-
     ActiveRecord::Base.transaction do
       memo.save!
       memo.tags << build_tags
@@ -29,6 +30,10 @@ class MemoCreator
   end
 
   def parsed_tag_names
-    tag_names.to_s.split(',').map(&:strip).reject(&:blank?).uniq
+    tag_names.to_s
+             .split(',')
+             .map(&:strip)
+             .reject(&:blank?)
+             .uniq
   end
 end
