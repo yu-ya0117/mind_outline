@@ -14,9 +14,33 @@
         <%= f.text_field :title, class: "w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none" %>
       </div>
 
-      <div class="mb-6">
+      <div class="mb-4">
         <%= f.label :content, "内容", class: "mb-2 block text-sm font-semibold text-gray-700" %>
         <%= f.text_area :content, rows: 8, class: "w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none" %>
+      </div>
+
+      <p class="mb-2 text-sm font-semibold text-gray-700">現在のタグ</p>
+      <div class="mb-4 flex flex-wrap gap-2">
+        <% if @memo.tags.any? %>
+          <% @memo.tags.each do |tag| %>
+            <span class="inline-block rounded-full bg-blue-100  px-3 py-1 text-xs text-blue-500">
+              <%= tag.name %>
+            </span>
+          <% end %>
+        <% else %>
+          <p class="text-sm text-gray-400">タグはまだありません</p>
+        <% end %>
+      </div>
+
+      <div class="mb-6">
+        <p class="mb-2 text-sm font-semibold text-gray-700">
+          <%= label_tag :tag_names, "タグ" %>
+        </p>
+        <%= text_field_tag :tag_names,
+            @memo.tags.pluck(:name).join(", "),
+            placeholder: "例: Ruby, Rails, Webアプリ",
+            class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
+        <p class="mt-1 text-sm text-gray-800">カンマ区切りで入力してください</p>
       </div>
 
       <div class="flex gap-3">

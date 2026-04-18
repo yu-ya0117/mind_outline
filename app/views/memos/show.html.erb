@@ -20,9 +20,7 @@
       <p class="text-sm text-gray-500 mb-2">
         <% if @memo.tags.any? %>
           <% @memo.tags.each do |tag| %>
-            <span class="inline-block rounded-full bg-blue-100  px-3 py-1 text-xs text-blue-700 mr-2 mb-1">
-              <%= tag.name %>
-            </span>
+            <%= link_to tag.name, memos_path(tag: tag.name), class: "inline-block rounded-full bg-blue-100  px-3 py-1 text-xs text-blue-500" %>
           <% end %>
         <% else %>
           <p class="text-sm text-gray-400">タグはまだありません</p>

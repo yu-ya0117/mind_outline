@@ -7,11 +7,12 @@ class MemosController < ApplicationController
 
   def index
     @memos = current_user.memos.roots.order(created_at: :desc)
+    return if params[:tag].blank?
+
+    @memos = @memos.joins(:tags).where(tags: { name: params[:tag] }).distinct
   end
 
-  def new
-    @memo = current_user.memos.new
-  end
+  def new = @memo = current_user.memos.new
 
   def create
     @memo = MemoCreator.new(
@@ -28,19 +29,16 @@ class MemosController < ApplicationController
 
   def show = @children = @memo.children
 
-  def edit
-    @child_memo = current_user.memos.new
-  end
+  def edit = @child_memo = current_user.memos.new
 
   def update
-    if @memo.update(memo_params)
-      redirect_to memo_path(@memo), notice: 'メモを更新しました。'
-    else
-      @tree_root = @memo.root
-      @child_memo = current_user.memos.new
-      flash.now[:alert] = 'メモの更新に失敗しました。'
-      render :edit, status: :unprocessable_entity
-    end
+    memo_updater.call
+    redirect_to memo_path(@memo), notice: 'メモを更新しました。'
+  rescue ActiveRecord::RecordInvalid
+    @tree_root = @memo.root
+    @child_memo = current_user.memos.new
+    flash.now[:alert] = 'メモの更新に失敗しました。'
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -61,9 +59,7 @@ class MemosController < ApplicationController
     end
   end
 
-  def ai_tools
-    @tab = params[:tab].presence || 'organize'
-  end
+  def ai_tools = @tab = params[:tab].presence || 'organize'
 
   def ai_generate
     @tab = params[:tab].presence || 'organize'
@@ -90,17 +86,11 @@ class MemosController < ApplicationController
     )
   end
 
-  def set_tree_root
-    @tree_root = @memo.root
-  end
+  def set_tree_root = @tree_root = @memo.root
 
-  def set_memo
-    @memo = current_user.memos.find(params[:id])
-  end
+  def set_memo = @memo = current_user.memos.find(params[:id])
 
-  def memo_params
-    params.require(:memo).permit(:title, :content)
-  end
+  def memo_params = params.require(:memo).permit(:title, :content)
 
   def ai_generate_params
     {
@@ -121,5 +111,14 @@ class MemosController < ApplicationController
       'summary' => '要約を生成しました。',
       'writing' => '文章を生成しました。'
     }.fetch(tab, 'AI処理が完了しました。')
+  end
+
+  def memo_updater
+    MemoUpdater.new(
+      memo: @memo,
+      memo_params: memo_params,
+      tag_names: params[:tag_names],
+      user: current_user
+    )
   end
 end
