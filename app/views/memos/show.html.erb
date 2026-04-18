@@ -14,10 +14,18 @@
       </div>
     </div>
 
-
     <div class="mb-6">
       <p class="mb-2 text-sm font-semibold text-gray-500">タイトル：内容</p>
       <%= render "memo_tree", memo: @tree_root, current_memo: nil %>
+      <p class="text-sm text-gray-500 mb-2">
+        <% if @memo.tags.any? %>
+          <% @memo.tags.each do |tag| %>
+            <%= link_to tag.name, memos_path(tag: tag.name), class: "inline-block rounded-full bg-blue-100  px-3 py-1 text-xs text-blue-500" %>
+          <% end %>
+        <% else %>
+          <p class="text-sm text-gray-400">タグはまだありません</p>
+        <% end %>
+      </p>
     </div>
 
 

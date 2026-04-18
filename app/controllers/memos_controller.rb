@@ -1,46 +1,44 @@
 # frozen_string_literal: true
 
 class MemosController < ApplicationController
+  include MemoAiActions
+
   before_action :authenticate_user!
   before_action :set_memo, only: %i[show edit update destroy save_child ai_tools ai_generate]
   before_action :set_tree_root, only: %i[show edit ai_tools ai_generate]
 
   def index
     @memos = current_user.memos.roots.order(created_at: :desc)
+    return if params[:tag].blank?
+
+    @memos = @memos.joins(:tags).where(tags: { name: params[:tag] }).distinct
   end
 
-  def new
-    @memo = current_user.memos.new
-  end
+  def new = @memo = current_user.memos.new
 
   def create
-    @memo = current_user.memos.new(memo_params)
+    creator = build_memo_creator
+    @memo = creator.call
 
-    if @memo.save
-      redirect_to memos_path, notice: 'メモを作成しました。'
-    else
-      flash.now[:alert] = 'メモの作成に失敗しました。'
-      render :new, status: :unprocessable_entity
-    end
+    redirect_to memos_path, notice: 'メモを作成しました。'
+  rescue ActiveRecord::RecordInvalid
+    @memo = creator.memo
+    flash.now[:alert] = 'メモの作成に失敗しました。'
+    render :new, status: :unprocessable_entity
   end
 
-  def show
-    @children = @memo.children
-  end
+  def show = @children = @memo.children
 
-  def edit
-    @child_memo = current_user.memos.new
-  end
+  def edit = @child_memo = current_user.memos.new
 
   def update
-    if @memo.update(memo_params)
-      redirect_to memo_path(@memo), notice: 'メモを更新しました。'
-    else
-      @tree_root = @memo.root
-      @child_memo = current_user.memos.new
-      flash.now[:alert] = 'メモの更新に失敗しました。'
-      render :edit, status: :unprocessable_entity
-    end
+    memo_updater.call
+    redirect_to memo_path(@memo), notice: 'メモを更新しました。'
+  rescue ActiveRecord::RecordInvalid
+    @tree_root = @memo.root
+    @child_memo = current_user.memos.new
+    flash.now[:alert] = 'メモの更新に失敗しました。'
+    render :edit, status: :unprocessable_entity
   end
 
   def destroy
@@ -61,65 +59,28 @@ class MemosController < ApplicationController
     end
   end
 
-  def ai_tools
-    @tab = params[:tab].presence || 'organize'
-  end
-
-  def ai_generate
-    @tab = params[:tab].presence || 'organize'
-    @result = AiTextService.new.generate(**ai_generate_params)
-    log_ai_generate_params
-
-    if @result.present?
-      flash.now[:notice] = ai_success_message(@tab)
-    else
-      flash.now[:alert] = 'AI処理に失敗しました。時間をおいて再度お試しください。'
-    end
-
-    render :ai_tools
-  end
-
   private
 
-  def log_ai_generate_params
-    Rails.logger.debug(
-      "tab: #{params[:tab].inspect}, " \
-      "format_type: #{params[:format_type].inspect}, " \
-      "tone: #{params[:tone].inspect}, " \
-      "result: #{@result.inspect}"
+  def set_tree_root = @tree_root = @memo.root
+
+  def set_memo = @memo = current_user.memos.find(params[:id])
+
+  def memo_params = params.require(:memo).permit(:title, :content)
+
+  def build_memo_creator
+    MemoCreator.new(
+      user: current_user,
+      memo_params: memo_params,
+      tag_names: params[:tag_names]
     )
   end
 
-  def set_tree_root
-    @tree_root = @memo.root
-  end
-
-  def set_memo
-    @memo = current_user.memos.find(params[:id])
-  end
-
-  def memo_params
-    params.require(:memo).permit(:title, :content)
-  end
-
-  def ai_generate_params
-    {
-      tab: @tab,
-      content: ai_source_text_for_tab,
-      format: params[:format_type],
-      tone: params[:tone]
-    }
-  end
-
-  def ai_source_text_for_tab
-    @tab == 'organize' ? @memo.ai_tree_source_text : @memo.ai_source_text
-  end
-
-  def ai_success_message(tab)
-    {
-      'organize' => 'アウトラインを生成しました。',
-      'summary' => '要約を生成しました。',
-      'writing' => '文章を生成しました。'
-    }.fetch(tab, 'AI処理が完了しました。')
+  def memo_updater
+    MemoUpdater.new(
+      memo: @memo,
+      memo_params: memo_params,
+      tag_names: params[:tag_names],
+      user: current_user
+    )
   end
 end
