@@ -67,6 +67,9 @@ jobs:                       # ジョブの定義
       - name: Run tests
         run: bin/rails test
 
+      - name: Run RSpec
+        run: bundle exec rspec
+
       - name: Upload test logs
         if: failure()  # テストが失敗した場合にのみログをアップロード
         uses: actions/upload-artifact@v4
