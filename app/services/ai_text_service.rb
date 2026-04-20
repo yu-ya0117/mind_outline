@@ -34,7 +34,7 @@ class AiTextService
   end
 
   def clean_result(text)
-    text.gsub(/\A```[a-zA-Z]*\n?/, "").gsub(/```\z/, "").strip
+    text.gsub(/\A```[a-zA-Z]*\n?/, '').gsub(/```\z/, '').strip
   end
 
   def handle_error(error)
