@@ -39,6 +39,20 @@
     <%= form_with(url: ai_generate_memo_path(@memo), method: :post, data: { turbo: false }, local: true, class: "mb-6") do |f| %>
       <%= hidden_field_tag :tab, @tab %>
 
+      <% if @tab == "organize" %>
+        <div class="mb-4">
+          <%= label_tag :format_type, "整理スタイル", class: "mb-1 block text-sm font-medium text-gray-700" %>
+          <%= select_tag :format_type,
+            options_for_select([
+              ["箇条書き", "bullet"],
+              ["番号付き", "numbered"],
+              ["絵文字付き", "emoji"]
+            ], @tab),
+            include_blank: "選択してください",
+            class: "rounded-lg border border-gray-300 px-3 py-2" %>
+        </div>
+      <% end %>
+
       <% if @tab == "writing" %>
         <div class="mb-4">
           <%= label_tag :format_type, "文章の種類", class: "mb-1 block text-sm font-medium text-gray-700" %>

@@ -34,14 +34,11 @@ class AiTextService
   end
 
   def clean_result(text)
-    text.to_s
-        .gsub(/\A```[\w-]*\n?/, '')
-        .gsub(/\n?```\z/, '')
-        .strip
+    text.gsub(/\A```[a-zA-Z]*\n?/, "").gsub(/```\z/, "").strip
   end
 
   def handle_error(error)
-    Rails.logger.error "OpenAI API Error: #{error.message}"
+    Rails.logger.error("AI generation failed: #{error.message}")
     'エラーメッセージ'
   end
 
