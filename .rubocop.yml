@@ -3,4 +3,19 @@ Style/Documentation:
 
 Metrics/BlockLength:
   Exclude:
+
+Metrics/BlockLength:
+  Exclude:
     - 'db/schema.rb'
+    - 'spec/**/*'
+    - 'test/**'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'test/**/*'
+    - 'spec/**/*'
