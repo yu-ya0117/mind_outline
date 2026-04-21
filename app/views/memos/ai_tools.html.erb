@@ -57,14 +57,14 @@
         <div class="mb-4">
           <%= label_tag :format_type, "文章の種類", class: "mb-1 block text-sm font-medium text-gray-700" %>
           <%= select_tag :format_type,
-              options_for_select([["日報", "日報"], ["相談文", "相談文"], ["報告文", "報告文"]]),
+              options_for_select([["日報", "daily_report"], ["相談文", "consultation"], ["報告文", "report"]]),
               class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
         </div>
 
         <div class="mb-6">
           <%= label_tag :tone, "文体", class: "mb-1 block text-sm font-medium text-gray-700" %>
           <%= select_tag :tone,
-              options_for_select([["丁寧", "丁寧"], ["ややカジュアル", "ややカジュアル"]]),
+              options_for_select([["丁寧", "formal"], ["ややカジュアル", "casual"]]),
               class: "w-full rounded-lg border border-gray-300 px-3 py-2" %>
         </div>
       <% end %>

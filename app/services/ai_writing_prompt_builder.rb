@@ -9,17 +9,12 @@ class AiWritingPromptBuilder
 
   def build
     <<~PROMPT
-      次のメモをもとに「#{format || '文章'}」を作成してください。
+      次の内容をもとに、#{format_instruction}として使える自然な文章を作成してください。
+      #{tone_instruction}
+      #{writing_rule}
+      #{structure_instruction}
 
-      文体は「#{tone || '丁寧'}」にしてください。
-      #{tone_guide}
-
-      用途ごとのルールは次の通りです。
-      #{writing_format_rule}
-
-      #{plain_output_rule}
-
-      【メモ内容】
+      【内容】
       #{content}
     PROMPT
   end
@@ -28,61 +23,77 @@ class AiWritingPromptBuilder
 
   attr_reader :content, :format, :tone
 
-  def tone_guide
-    <<~TEXT
-      - 「丁寧」の場合は、です・ます調で落ち着いた表現にしてください。
-      - 「ややカジュアル」の場合は、柔らかく親しみやすい表現にしてください。ただし砕けすぎないでください。
-    TEXT
-  end
-
-  def writing_format_rule
+  def format_instruction
     case format
-    when '日報'
-      daily_report_rule
-    when '相談文'
-      consultation_rule
-    when '報告文'
-      report_rule
+    when 'daily_report'
+      '日報'
+    when 'consultation'
+      '相談文'
+    when 'report'
+      '報告文'
     else
-      default_writing_rule
+      '文章'
     end
   end
 
-  def daily_report_rule
-    <<~TEXT
-      - 日報として作成してください。
-      - 今日取り組んだこと、学んだこと、気づいたことを簡潔にまとめてください。
-      - 読者への質問、相談、意見募集は含めないでください。
-      - 事実と所感を自然につなげ、1〜2段落程度でまとめてください。
-    TEXT
+  def tone_instruction
+    case tone
+    when 'casual'
+      <<~TONE
+        文体はややカジュアルにしてください。
+        - 丁寧語（〜です・〜ます）は使用してもよいが、堅すぎる表現は避ける
+        - 「いたしました」「〜でございます」などの強い敬語は使わない
+        - 自然で話し言葉に近い表現を意識する
+        - 一文を短めにして読みやすくする
+        - 主語を「私は」など省略して自然な文章にする
+        - 読み手に親しみやすい表現にする
+      TONE
+    else
+      <<~TONE
+        文体は丁寧にしてください。
+        - ビジネス文として適切な敬語を使用する
+        - 「〜いたしました」「〜でございます」などの丁寧な表現を使う
+        - 客観的で落ち着いた文章にする
+      TONE
+    end
   end
 
-  def consultation_rule
-    <<~TEXT
-      - 相談文として作成してください。
-      - 自分の状況や考えを説明したうえで、相手に意見や助言を求める文章にしてください。
-      - 相談したい点を明確にし、最後は相談・質問で締めてください。
-      - 単なる報告文や日報にならないようにしてください。
-    TEXT
+  def writing_rule
+    <<~RULE
+      入力内容の意図を保ちながら、読みやすく簡潔にまとめてください。
+      内容を勝手に増やしすぎず、不足部分の補完は最小限にしてください。
+      コードブロック（```）は使わず、結果本文だけを出力してください。
+    RULE
   end
 
-  def report_rule
-    <<~TEXT
-      - 報告文として作成してください。
-      - 取り組んだ内容、状況、結果を整理して伝える文章にしてください。
-      - 主観よりも事実の共有を優先してください。
-      - 読者への質問や相談は含めないでください。
-    TEXT
+  def structure_instruction
+    case format
+    when 'daily_report'
+      daily_report_structure
+    else
+      default_structure
+    end
   end
 
-  def default_writing_rule
-    <<~TEXT
-      - 自然で読みやすい文章にしてください。
-      - 与えられたメモの内容を整理し、分かりやすく構成してください。
-    TEXT
+  def daily_report_structure
+    <<~STRUCTURE
+      以下の構成で出力してください。
+
+      【本日の作業】
+      - 今日行った作業内容
+
+      【課題・気づき】
+      - 課題や気づいたこと
+
+      【明日の予定】
+      - 次に行う予定の内容
+
+      各見出しは必ず付けてください。
+      内容が少ない場合でも、できるだけ上記3項目に整理してください。
+    STRUCTURE
   end
 
-  def plain_output_rule
-    'コードブロック（```）、見出し記号、番号、箇条書きの記号、余計な前置きや説明文は付けず、結果本文だけを出力してください。'
+  def default_structure
+    '入力内容に応じて、自然で読みやすい構成に整えてください。'
   end
 end

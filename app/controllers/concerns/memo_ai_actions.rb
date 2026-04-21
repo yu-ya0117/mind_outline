@@ -8,6 +8,7 @@ module MemoAiActions
   end
 
   def ai_generate
+    p params
     @tab = params[:tab].presence || 'organize'
     @result = AiTextService.new.generate(**ai_generate_params)
     log_ai_generate_params
