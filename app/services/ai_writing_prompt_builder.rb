@@ -23,27 +23,19 @@ class AiWritingPromptBuilder
 
   attr_reader :content, :format, :tone
 
-  def format_instruction
-    case format
-    when 'daily_report'
-      '日報'
-    when 'consultation'
-      '相談文'
-    when 'report'
-      '報告文'
-    else
-      '文章'
-    end
+  def format_instruction = format_labels.fetch(format, default_format_label)
+
+  def format_labels
+    {
+      'daily_report' => '日報',
+      'consultation' => '相談文',
+      'report' => '報告文'
+    }
   end
 
-  def tone_instruction
-    case tone
-    when 'casual'
-      casual_tone_instruction
-    else
-      polite_tone_instruction
-    end
-  end
+  def default_format_label = '文章'
+
+  def tone_instruction = tone == 'casual' ? casual_tone_instruction : polite_tone_instruction
 
   def casual_tone_instruction
     <<~TONE
@@ -74,13 +66,14 @@ class AiWritingPromptBuilder
     RULE
   end
 
-  def structure_instruction
-    case format
-    when 'daily_report'
-      daily_report_structure
-    else
-      default_structure
-    end
+  def structure_instruction = structure_builders.fetch(format, method(:default_structure)).call
+
+  def structure_builders
+    {
+      'daily_report' => method(:daily_report_structure),
+      'consultation' => method(:consultation_structure),
+      'report' => method(:report_structure)
+    }
   end
 
   def daily_report_structure
@@ -95,6 +88,42 @@ class AiWritingPromptBuilder
 
       【明日の予定】
       - 次に行う予定の内容
+
+      各見出しは必ず付けてください。
+      内容が少ない場合でも、できるだけ上記3項目に整理してください。
+    STRUCTURE
+  end
+
+  def consultation_structure
+    <<~STRUCTURE
+      以下の構成で出力してください。
+
+      【背景】
+      - 相談に至った背景や前提
+
+      【現在の状況】
+      - 今困っていることや悩んでいること
+
+      【相談したいこと】
+      - 相手に相談したい内容や確認したいこと
+
+      各見出しは必ず付けてください。
+      内容が少ない場合でも、できるだけ上記3項目に整理してください。
+    STRUCTURE
+  end
+
+  def report_structure
+    <<~STRUCTURE
+      以下の構成で出力してください。
+
+      【概要】
+      - 何についての報告か
+
+      【詳細】
+      - 実施内容や現状、確認できたこと
+
+      【今後の対応】
+      - 必要に応じて次の対応や補足事項
 
       各見出しは必ず付けてください。
       内容が少ない場合でも、できるだけ上記3項目に整理してください。
