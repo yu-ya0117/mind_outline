@@ -10,15 +10,15 @@
 
     <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2">
       <div class="rounded-xl border border-gray-200 p-6 text-center">
-        <p class="mb-4 text-sm text-gray-500">すでにアカウントをお持ちの方はこちら</p>
+        <p class="mb-4 text-sm text-gray-500">アカウントをお持ちの方はこちら</p>
         <%= link_to "ログイン", new_user_session_path,
-            class: "inline-block rounded-lg bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700" %>
+            class: "w-full inline-block rounded-lg bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 sm:w-auto" %>
       </div>
 
       <div class="rounded-xl border border-gray-200 p-6 text-center">
         <p class="mb-4 text-sm text-gray-500">初めて利用する方はこちら</p>
         <%= link_to "新規登録", new_user_registration_path,
-            class: "inline-block rounded-lg bg-green-600 px-6 py-3 text-white font-semibold hover:bg-green-700" %>
+            class: "w-full inline-block rounded-lg bg-green-600 px-6 py-3 text-white font-semibold hover:bg-green-700 sm:w-auto" %>
       </div>
     </div>
   </div>
