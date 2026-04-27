@@ -1,7 +1,7 @@
 <% is_current = memo == current_memo %>
 
-<div class="<%= depth.zero? ? '' : 'ml-3 mt-4 border-l-2 border-gray-300 pl-3 sm:ml-6 sm:pl-4' %>">
- <div id="<%= dom_id(memo) %>" class="rounded-lg p-3 sm:p-2 <%= is_current ? 'current-memo bg-yellow-50 border border-yellow-400' : '' %>">
+<div class="<%= depth.zero? ? '' : 'ml-2 mt-4 border-l border-gray-300 pl-2 sm:ml-6 sm:border-l-2 sm:pl-4' %>">
+  <div id="<%= dom_id(memo) %>" class="rounded-lg p-3 sm:p-2 <%= is_current ? 'current-memo bg-yellow-50 border border-yellow-400' : '' %>">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
       <div class="min-w-0">
         <p class="wrap-break-word font-semibold text-gray-800">
