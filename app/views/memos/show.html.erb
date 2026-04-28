@@ -18,6 +18,7 @@
       <p class="mb-2 text-sm font-semibold text-gray-500">タイトル：内容</p>
       <%= render "memo_tree", memo: @tree_root, current_memo: nil %>
       <div class="mb-2 text-sm text-gray-500">
+        <p class="mb-2 text-sm font-semibold text-gray-500">タグ</p>
         <% if @memo.tags.any? %>
           <div class="flex flex-wrap gap-2">
             <% @memo.tags.each do |tag| %>
