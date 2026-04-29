@@ -64,5 +64,12 @@
       <% end %>
       <%= yield %>
     </main>
+
+    <footer class="fixed bottom-0 z-50 w-full border-t border-gray-200 bg-white py-4 text-center text-sm text-gray-500">
+      <div class="flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-6">
+        <%= link_to "利用規約", terms_path, class: "inline-block text-sm text-gray-600 hover:text-gray-800" %>
+        <%= link_to "プライバシーポリシー", privacy_path, class: "inline-block text-sm text-gray-600 hover:text-gray-800" %>
+      </div>
+    </footer>
   </body>
 </html>

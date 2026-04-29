@@ -16,4 +16,6 @@ Rails.application.routes.draw do
   end
 
   get '/up', to: proc { [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
+  get "/terms", to: "pages#terms"
+  get "/privacy", to: "pages#privacy"
 end
