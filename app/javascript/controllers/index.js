@@ -5,7 +5,8 @@
 import { application } from "./application"
 import HelloController from "./hello_controller"
 import TreeToggleController from "./tree_toggle_controller"
+import LoadingController from "./loading_controller"
 
 application.register("hello", HelloController)
 application.register("tree-toggle", TreeToggleController)
-
+application.register("loading", LoadingController)
