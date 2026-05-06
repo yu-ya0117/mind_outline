@@ -51,7 +51,17 @@
       </div>
     </div>
 
-    <%= form_with(url: ai_generate_memo_path(@memo), method: :post, data: { turbo: false }, local: true, class: "mb-6") do |f| %>
+    <%= form_with(
+        url: ai_generate_memo_path(@memo),
+        method: :post,
+        data: { 
+          turbo: false,
+          controller: "loading",
+          action: "submit->loading#show"
+        },
+        local: true,
+        class: "mb-6"
+      ) do |f| %>
       <%= hidden_field_tag :tab, @tab %>
 
       <% if @tab == "organize" %>
@@ -85,7 +95,13 @@
       <% end %>
 
       <%= f.submit "生成する",
+        data: { loading_target: "button" },
         class: "w-full rounded-lg bg-green-600 px-4 py-2 font-semibold text-white hover:bg-green-700 sm:w-auto" %>
+      
+      <div data-loading-target="message" class="mt-3 hidden text-sm text-gray-500 gap-1">
+        <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-green-600"></span>
+        <span>生成中です。少しお待ちください...</span>
+      </div>
     <% end %>
 
     <div id="ai_result">

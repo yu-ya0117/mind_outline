@@ -14,6 +14,8 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
   config.use_transactional_fixtures = true
   config.filter_rails_from_backtrace!
 end
