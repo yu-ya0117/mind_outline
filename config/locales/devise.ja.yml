@@ -10,3 +10,6 @@ ja:
       signed_up: "アカウント登録が完了しました。"
       updated: "アカウント情報を更新しました。"
       destroyed: "アカウントを削除しました。"
+    mailer:
+      reset_password_instructions:
+        subject: "パスワード再設定のご案内"
