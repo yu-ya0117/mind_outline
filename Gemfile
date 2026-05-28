@@ -61,10 +61,10 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem 'letter_opener_web', '~> 3.0'
   gem 'rubocop', '~> 1.85', '>= 1.85.1', require: false
   gem 'rubocop-rails-omakase', require: false
   gem 'web-console'
-  gem 'letter_opener_web', '~> 3.0'
 end
 
 group :test do

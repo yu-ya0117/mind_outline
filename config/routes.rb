@@ -19,7 +19,5 @@ Rails.application.routes.draw do
   get '/terms', to: 'pages#terms'
   get '/privacy', to: 'pages#privacy'
 
-  if Rails.env.development?
-    mount LetterOpenerWeb::Engine, at: "/letter_opener"
-  end
+  mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end

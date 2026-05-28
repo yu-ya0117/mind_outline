@@ -13,3 +13,5 @@ ja:
     mailer:
       reset_password_instructions:
         subject: "パスワード再設定のご案内"
+    passwords:
+      send_instructions: "パスワード再設定用のメールを送信しました。メールに記載されたリンクから再設定を行ってください。"
