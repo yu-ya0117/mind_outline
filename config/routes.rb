@@ -18,4 +18,6 @@ Rails.application.routes.draw do
   get '/up', to: proc { [200, { 'Content-Type' => 'text/plain' }, ['OK']] }
   get '/terms', to: 'pages#terms'
   get '/privacy', to: 'pages#privacy'
+
+  mount LetterOpenerWeb::Engine, at: '/letter_opener' if Rails.env.development?
 end

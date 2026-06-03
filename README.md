@@ -901,6 +901,6 @@ Figma：<https://www.figma.com/design/LjIbl8Pmw11G4e2dHFzCt4/mind_outline%E7%94%
 
 ## 12. ER図
 
-**2026/4/19更新**
+**2026/5/24更新**
 
-[![Image from Gyazo](https://i.gyazo.com/d724ce70e609f0c90798c9c4d1eb9fc9.png)](https://gyazo.com/d724ce70e609f0c90798c9c4d1eb9fc9)
+[![Image from Gyazo](https://i.gyazo.com/9781b067732829d822c9812d859c9ea6.png)](https://gyazo.com/9781b067732829d822c9812d859c9ea6)
