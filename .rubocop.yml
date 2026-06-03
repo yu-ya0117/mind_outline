@@ -4,6 +4,7 @@ Style/Documentation:
 Metrics/BlockLength:
   Exclude:
     - 'config/environments/development.rb'
+    - 'config/environments/production.rb'
     - 'db/schema.rb'
     - 'spec/**/*'
     - 'test/**'
