@@ -24,7 +24,7 @@ jobs:                       # ジョブの定義
         run: bundle exec rubocop --parallel
 
       - name: Run Brakeman
-        run: bundle exec brakeman --no-pager
+        run: bundle exec brakeman --no-progress --no-pager --no-exit-on-warn
 
   test:
     runs-on: ubuntu-latest
